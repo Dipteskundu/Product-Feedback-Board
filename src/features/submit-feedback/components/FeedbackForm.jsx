@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { COLORS } from '../../../shared/constants/tokens';
 import { CATEGORIES, PRIORITIES } from '../../../shared/constants/enums';
 import Button from '../../../shared/components/Button';
 import { useCreateFeedback } from '../hooks/useCreateFeedback';
@@ -44,95 +43,94 @@ function FeedbackForm({ onSuccess }) {
     );
   };
 
-  const inputStyle = {
-    width: '100%',
-    padding: '8px 12px',
-    borderRadius: 6,
-    border: `1px solid ${COLORS.border}`,
-    fontSize: 14,
-    fontFamily: "'Inter', sans-serif",
-    boxSizing: 'border-box',
-  };
+  const inputClass = `
+    w-full px-4 py-2.5 bg-bg border rounded-lg text-sm text-ink
+    placeholder:text-ink-muted/60
+    focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent
+    transition-colors
+  `;
 
-  const labelStyle = {
-    display: 'block',
-    marginBottom: 4,
-    fontSize: 14,
-    fontWeight: 500,
-    color: COLORS.ink,
-  };
-
-  const errorStyle = {
-    fontSize: 12,
-    color: COLORS.bug,
-    marginTop: 2,
-  };
+  const labelClass = 'block text-sm font-medium text-ink mb-1.5';
+  const errorClass = 'text-xs text-bug mt-1.5';
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div style={{ marginBottom: 16 }}>
-        <label style={labelStyle}>Title</label>
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div>
+        <label htmlFor="title" className={labelClass}>Title</label>
         <input
+          id="title"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          style={inputStyle}
+          className={`${inputClass} ${errors.title ? 'border-bug focus:ring-bug' : 'border-border'}`}
           placeholder="Brief summary of your feedback"
         />
-        {errors.title && <div style={errorStyle}>{errors.title}</div>}
+        {errors.title && <p className={errorClass}>{errors.title}</p>}
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <label style={labelStyle}>Description</label>
+      <div>
+        <label htmlFor="description" className={labelClass}>Description</label>
         <textarea
+          id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={4}
-          style={{ ...inputStyle, resize: 'vertical' }}
+          className={`${inputClass} resize-y min-h-[100px] ${errors.description ? 'border-bug focus:ring-bug' : 'border-border'}`}
           placeholder="Describe your feedback in detail"
         />
-        {errors.description && <div style={errorStyle}>{errors.description}</div>}
+        {errors.description && <p className={errorClass}>{errors.description}</p>}
+        <p className="text-xs text-ink-muted mt-1">{description.length}/1000 characters</p>
       </div>
 
-      <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
-        <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Category</label>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="category" className={labelClass}>Category</label>
           <select
+            id="category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            style={inputStyle}
+            className={`${inputClass} cursor-pointer ${errors.category ? 'border-bug focus:ring-bug' : 'border-border'}`}
           >
             <option value="">Select category</option>
             {CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
+              <option key={c} value={c}>{c}</option>
             ))}
           </select>
-          {errors.category && <div style={errorStyle}>{errors.category}</div>}
+          {errors.category && <p className={errorClass}>{errors.category}</p>}
         </div>
 
-        <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Priority</label>
+        <div>
+          <label htmlFor="priority" className={labelClass}>Priority</label>
           <select
+            id="priority"
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
-            style={inputStyle}
+            className={`${inputClass} cursor-pointer ${errors.priority ? 'border-bug focus:ring-bug' : 'border-border'}`}
           >
             <option value="">Select priority</option>
             {PRIORITIES.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
+              <option key={p} value={p}>{p}</option>
             ))}
           </select>
-          {errors.priority && <div style={errorStyle}>{errors.priority}</div>}
+          {errors.priority && <p className={errorClass}>{errors.priority}</p>}
         </div>
       </div>
 
-      <Button type="submit" disabled={createFeedback.isPending}>
-        {createFeedback.isPending ? 'Submitting...' : 'Submit Feedback'}
-      </Button>
+      <div className="flex justify-end gap-3 pt-2">
+        <Button type="submit" disabled={createFeedback.isPending}>
+          {createFeedback.isPending ? (
+            <>
+              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              Submitting...
+            </>
+          ) : (
+            'Submit Feedback'
+          )}
+        </Button>
+      </div>
     </form>
   );
 }

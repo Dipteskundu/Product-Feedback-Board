@@ -1,9 +1,7 @@
-import { COLORS } from '../../../shared/constants/tokens';
-
 const categoryColorMap = {
-  Bug: COLORS.bug,
-  Feature: COLORS.feature,
-  Improvement: COLORS.improvement,
+  Bug: 'bug',
+  Feature: 'feature',
+  Improvement: 'improvement',
 };
 
 export default categoryColorMap;

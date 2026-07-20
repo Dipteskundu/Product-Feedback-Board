@@ -5,9 +5,17 @@ export const COLORS = {
   ink: '#14141A',
   inkMuted: '#6B6B76',
   accent: '#4F46E5',
+  accentHover: '#4338CA',
+  accentLight: '#EEF2FF',
   bug: '#DC2626',
   feature: '#2563EB',
   improvement: '#059669',
+  statusOpen: '#6B7280',
+  statusUnderReview: '#8B5CF6',
+  statusPlanned: '#3B82F6',
+  statusInProgress: '#F59E0B',
+  statusCompleted: '#10B981',
+  statusRejected: '#EF4444',
 };
 
 export const FONTS = {

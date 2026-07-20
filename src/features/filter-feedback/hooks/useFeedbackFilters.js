@@ -8,7 +8,12 @@ export function useFeedbackFilters() {
     () => ({
       category: searchParams.get('category') || undefined,
       priority: searchParams.get('priority') || undefined,
+      status: searchParams.get('status') || undefined,
+      search: searchParams.get('search') || undefined,
+      sort: searchParams.get('sort') || 'newest',
       page: parseInt(searchParams.get('page') || '1', 10),
+      fromDate: searchParams.get('fromDate') || undefined,
+      toDate: searchParams.get('toDate') || undefined,
     }),
     [searchParams]
   );
@@ -22,6 +27,7 @@ export function useFeedbackFilters() {
         } else {
           next.delete(key);
         }
+        if (key !== 'page') next.delete('page');
         return next;
       });
     },

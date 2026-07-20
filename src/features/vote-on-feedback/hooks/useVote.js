@@ -6,28 +6,47 @@ export function useVote() {
 
   return useMutation({
     mutationFn: ({ feedbackId, voteType }) => castVote(feedbackId, voteType),
-    onMutate: async ({ feedbackId, voteType }) => {
+    onMutate: async ({ feedbackId, voteType, userVote }) => {
       await queryClient.cancelQueries({ queryKey: ['feedback'] });
 
       const previousData = queryClient.getQueriesData({ queryKey: ['feedback'] });
 
       queryClient.setQueriesData({ queryKey: ['feedback'] }, (old) => {
         if (!old?.data) return old;
+
+        const items = old.data.data || old.data;
+        if (!Array.isArray(items)) return old;
+
+        const updatedItems = items.map((item) => {
+          if (item._id !== feedbackId) return item;
+
+          let upDelta = 0;
+          let downDelta = 0;
+
+          if (!userVote) {
+            if (voteType === 'up') upDelta = 1;
+            else downDelta = 1;
+          } else if (userVote !== voteType) {
+            if (voteType === 'up') {
+              upDelta = 1;
+              downDelta = -1;
+            } else {
+              upDelta = -1;
+              downDelta = 1;
+            }
+          }
+
+          return {
+            ...item,
+            upvoteCount: item.upvoteCount + upDelta,
+            downvoteCount: item.downvoteCount + downDelta,
+            userVote: voteType,
+          };
+        });
+
         return {
           ...old,
-          data: old.data.map((item) => {
-            if (item._id !== feedbackId) return item;
-
-            const isUpvote = voteType === 'up';
-            const upDelta = isUpvote ? 1 : -1;
-            const downDelta = isUpvote ? -1 : 1;
-
-            return {
-              ...item,
-              upvoteCount: item.upvoteCount + upDelta,
-              downvoteCount: item.downvoteCount + downDelta,
-            };
-          }),
+          data: { ...old.data, data: updatedItems },
         };
       });
 

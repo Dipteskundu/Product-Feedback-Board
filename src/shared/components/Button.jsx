@@ -1,51 +1,39 @@
-import { COLORS } from '../constants/tokens';
-
 const variants = {
-  primary: {
-    backgroundColor: COLORS.accent,
-    color: '#FFFFFF',
-    hoverBackground: '#4338CA',
-  },
-  secondary: {
-    backgroundColor: 'transparent',
-    color: COLORS.ink,
-    hoverBackground: COLORS.bg,
-    border: `1px solid ${COLORS.border}`,
-  },
-  danger: {
-    backgroundColor: COLORS.bug,
-    color: '#FFFFFF',
-    hoverBackground: '#B91C1C',
-  },
+  primary: 'bg-accent hover:bg-accent-hover text-white shadow-sm hover:shadow-md active:scale-[0.98]',
+  secondary: 'bg-surface border border-border text-ink hover:bg-accent-light hover:border-accent/30 active:scale-[0.98]',
+  danger: 'bg-bug hover:bg-red-700 text-white shadow-sm hover:shadow-md active:scale-[0.98]',
+  ghost: 'bg-transparent text-ink-muted hover:bg-accent-light hover:text-ink active:scale-[0.98]',
 };
 
-function Button({ children, variant = 'primary', onClick, disabled, type = 'button', style = {} }) {
-  const v = variants[variant] || variants.primary;
+const sizes = {
+  sm: 'px-3 py-1.5 text-xs',
+  md: 'px-4 py-2 text-sm',
+  lg: 'px-5 py-2.5 text-sm',
+};
 
+function Button({
+  children,
+  variant = 'primary',
+  size = 'md',
+  className = '',
+  disabled = false,
+  ...props
+}) {
   return (
     <button
-      type={type}
-      onClick={onClick}
+      className={`
+        inline-flex items-center justify-center gap-2
+        font-medium rounded-lg
+        transition-all duration-150 ease-out
+        cursor-pointer
+        disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none
+        focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2
+        ${variants[variant]}
+        ${sizes[size]}
+        ${className}
+      `}
       disabled={disabled}
-      style={{
-        padding: '8px 16px',
-        borderRadius: 6,
-        border: v.border || 'none',
-        backgroundColor: v.backgroundColor,
-        color: v.color,
-        fontSize: 14,
-        fontWeight: 500,
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1,
-        transition: 'background-color 100ms ease',
-        ...style,
-      }}
-      onMouseEnter={(e) => {
-        if (!disabled) e.target.style.backgroundColor = v.hoverBackground;
-      }}
-      onMouseLeave={(e) => {
-        if (!disabled) e.target.style.backgroundColor = v.backgroundColor;
-      }}
+      {...props}
     >
       {children}
     </button>

@@ -1,4 +1,3 @@
-import { COLORS } from '../../../shared/constants/tokens';
 import { CATEGORIES } from '../../../shared/constants/enums';
 
 function CategoryFilter({ value, onChange }) {
@@ -6,15 +5,9 @@ function CategoryFilter({ value, onChange }) {
     <select
       value={value || ''}
       onChange={(e) => onChange(e.target.value || undefined)}
-      style={{
-        padding: '6px 12px',
-        borderRadius: 6,
-        border: `1px solid ${COLORS.border}`,
-        fontSize: 14,
-        fontFamily: "'Inter', sans-serif",
-        backgroundColor: COLORS.surface,
-        color: COLORS.ink,
-      }}
+      className="px-3 py-2 bg-surface border border-border rounded-lg text-sm text-ink
+        focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent
+        hover:border-accent/40 transition-colors cursor-pointer"
     >
       <option value="">All Categories</option>
       {CATEGORIES.map((c) => (
