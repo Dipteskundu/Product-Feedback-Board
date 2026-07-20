@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFeedbackList } from '../../entities/feedback';
 import { FeedbackGrid } from '../../entities/feedback';
 import { VoteButtons } from '../../features/vote-on-feedback';
 import { useDeleteFeedback } from '../../features/delete-feedback';
+import { DeleteRequestButton } from '../../features/delete-request';
 import { FilterBar, useFeedbackFilters } from '../../features/filter-feedback';
 import { FeedbackForm } from '../../features/submit-feedback';
 import { useToast } from '../../shared/components/Toast';
+import { useAuth } from '../../features/auth/hooks/useAuth';
+import { useNotifications } from '../../shared/hooks/useNotifications';
 import ConfirmDialog from '../../shared/components/ConfirmDialog';
 import Button from '../../shared/components/Button';
 import Modal from '../../shared/components/Modal';
@@ -21,15 +24,31 @@ function FeedbackBoard() {
   const deleteFeedback = useDeleteFeedback();
   const toast = useToast();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { data: notifications = [] } = useNotifications();
+  const shownNotifications = useRef(new Set());
   const { isModalOpen, requestDelete, cancelDelete, confirmDelete } =
     useDeleteConfirmation();
+
+  const isManagerOrAdmin = user?.role === 'manager' || user?.role === 'admin';
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      notifications.forEach((n) => {
+        if (!shownNotifications.current.has(n.id)) {
+          shownNotifications.current.add(n.id);
+          toast(n.message, 'info', 5000);
+        }
+      });
+    }
+  }, [notifications, toast]);
 
   const handleConfirmDelete = () => {
     const id = confirmDelete();
     if (id) {
       deleteFeedback.mutate(id, {
         onSuccess: () => toast('Feedback deleted successfully', 'success'),
-        onError: () => toast('Failed to delete feedback', 'error'),
+        onError: (error) => toast(error.message || 'Failed to delete feedback', 'error'),
       });
     }
   };
@@ -41,18 +60,24 @@ function FeedbackBoard() {
         upvoteCount={item.upvoteCount}
         userVote={item.userVote}
       />
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          requestDelete(item._id);
-        }}
-        className="p-1.5 rounded-lg text-ink-muted hover:text-bug hover:bg-red-50 transition-colors"
-        title="Delete feedback"
-      >
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-        </svg>
-      </button>
+      {isManagerOrAdmin ? (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            requestDelete(item._id);
+          }}
+          className="p-1.5 rounded-lg text-ink-muted hover:text-bug hover:bg-red-50 transition-colors"
+          title="Delete feedback"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
+      ) : (
+        item.createdByActorId?.toString() === user?._id && (
+          <DeleteRequestButton feedbackId={item._id} isOwner={true} />
+        )
+      )}
     </div>
   );
 

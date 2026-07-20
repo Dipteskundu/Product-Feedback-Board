@@ -7,12 +7,14 @@ import CategoryBadge from '../../entities/feedback/components/CategoryBadge';
 import PriorityDots from '../../entities/feedback/components/PriorityDots';
 import { VoteButtons } from '../../features/vote-on-feedback';
 import StatusSelect from '../../features/change-status/components/StatusSelect';
+import { DeleteRequestButton } from '../../features/delete-request';
 import { CommentInput } from '../../features/add-comment';
 import { useComments } from '../../entities/comment';
 import CommentList from '../../entities/comment/components/CommentList';
 import { useActivities } from '../../entities/activity';
 import ActivityTimeline from '../../entities/activity/components/ActivityTimeline';
 import { useDeleteFeedback } from '../../features/delete-feedback';
+import { useAuth } from '../../features/auth/hooks/useAuth';
 import ConfirmDialog from '../../shared/components/ConfirmDialog';
 import Button from '../../shared/components/Button';
 import { CardSkeleton } from '../../shared/components/Skeleton';
@@ -23,6 +25,9 @@ function FeedbackDetail() {
   const [replyTo, setReplyTo] = useState(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const deleteFeedback = useDeleteFeedback();
+  const { user } = useAuth();
+
+  const isManagerOrAdmin = user?.role === 'manager' || user?.role === 'admin';
 
   const { data: feedback, isLoading, error } = useQuery({
     queryKey: ['feedback', id],
@@ -33,9 +38,14 @@ function FeedbackDetail() {
   const { data: comments = [] } = useComments(id);
   const { data: activities = [] } = useActivities(id);
 
+  const isOwner = feedback?.createdByActorId?.toString() === user?._id;
+
   const handleDelete = () => {
     deleteFeedback.mutate(id, {
       onSuccess: () => navigate('/'),
+      onError: (error) => {
+        setIsDeleteOpen(false);
+      },
     });
   };
 
@@ -111,10 +121,18 @@ function FeedbackDetail() {
             upvoteCount={feedback.upvoteCount}
             downvoteCount={feedback.downvoteCount}
           />
-          <StatusSelect feedbackId={feedback._id} currentStatus={feedback.status} />
-          <Button variant="danger" size="sm" onClick={() => setIsDeleteOpen(true)}>
-            Delete
-          </Button>
+          {isManagerOrAdmin ? (
+            <StatusSelect feedbackId={feedback._id} currentStatus={feedback.status} />
+          ) : (
+            <StatusBadge status={feedback.status} />
+          )}
+          {isManagerOrAdmin ? (
+            <Button variant="danger" size="sm" onClick={() => setIsDeleteOpen(true)}>
+              Delete
+            </Button>
+          ) : isOwner ? (
+            <DeleteRequestButton feedbackId={feedback._id} isOwner={true} />
+          ) : null}
         </div>
       </div>
 
