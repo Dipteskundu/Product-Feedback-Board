@@ -1,9 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-function LoginForm({ onSubmit, isLoading, error }) {
+function LoginForm({ onSubmit, isLoading, error, fillCredentials }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (fillCredentials) {
+      setEmail(fillCredentials.email);
+      setPassword(fillCredentials.password);
+    }
+  }, [fillCredentials]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

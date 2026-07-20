@@ -4,7 +4,6 @@ import { useFeedbackList } from '../../entities/feedback';
 import { FeedbackGrid } from '../../entities/feedback';
 import { VoteButtons } from '../../features/vote-on-feedback';
 import { useDeleteFeedback } from '../../features/delete-feedback';
-import { DeleteRequestButton } from '../../features/delete-request';
 import { FilterBar, useFeedbackFilters } from '../../features/filter-feedback';
 import { CreateFeedbackDialog } from '../../features/submit-feedback';
 import { useToast } from '../../shared/components/Toast';
@@ -57,7 +56,7 @@ function FeedbackBoard() {
         upvoteCount={item.upvoteCount}
         userVote={item.userVote}
       />
-      {isManagerOrAdmin ? (
+      {isManagerOrAdmin && (
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -70,10 +69,6 @@ function FeedbackBoard() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
           </svg>
         </button>
-      ) : (
-        item.createdByActorId?.toString() === user?._id && (
-          <DeleteRequestButton feedbackId={item._id} isOwner={true} />
-        )
       )}
     </div>
   );

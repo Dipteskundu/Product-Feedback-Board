@@ -171,46 +171,45 @@ function AppLayout() {
               </>
             )}
           </NavLink>
-
-          {isAdmin && (
-            <>
-              <p className="px-3 pt-4 pb-2 text-[11px] font-semibold uppercase tracking-wider text-ink-muted/50">
-                Admin
-              </p>
-
-              <NavLink
-                to="/admin"
-                onClick={() => setSidebarOpen(false)}
-                className={({ isActive }) => `
-                  group relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium
-                  transition-all duration-150
-                  ${isActive
-                    ? 'bg-accent-light/60 text-accent font-semibold'
-                    : 'text-ink-muted hover:bg-gray-100/80 dark:hover:bg-white/5 hover:text-ink'
-                  }
-                `}
-              >
-                {({ isActive }) => (
-                  <>
-                    {isActive && (
-                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-accent rounded-full" />
-                    )}
-                    <svg className="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive ? 2.2 : 1.8}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <span>Admin Panel</span>
-                    {pendingCount > 0 && (
-                      <span className="ml-auto w-5 h-5 rounded-full bg-bug text-white text-[10px] font-bold flex items-center justify-center">
-                        {pendingCount > 9 ? '9+' : pendingCount}
-                      </span>
-                    )}
-                  </>
-                )}
-              </NavLink>
-            </>
-          )}
         </nav>
+
+        {isAdmin && (
+          <div className="px-4 pb-2">
+            <p className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-ink-muted/50">
+              Admin
+            </p>
+            <NavLink
+              to="/admin"
+              onClick={() => setSidebarOpen(false)}
+              className={({ isActive }) => `
+                group relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium
+                transition-all duration-150
+                ${isActive
+                  ? 'bg-accent-light/60 text-accent font-semibold'
+                  : 'text-ink-muted hover:bg-gray-100/80 dark:hover:bg-white/5 hover:text-ink'
+                }
+              `}
+            >
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-accent rounded-full" />
+                  )}
+                  <svg className="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isActive ? 2.2 : 1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span>Admin Panel</span>
+                  {pendingCount > 0 && (
+                    <span className="ml-auto w-5 h-5 rounded-full bg-bug text-white text-[10px] font-bold flex items-center justify-center">
+                      {pendingCount > 9 ? '9+' : pendingCount}
+                    </span>
+                  )}
+                </>
+              )}
+            </NavLink>
+          </div>
+        )}
 
         {/* Theme Toggle */}
         <div className="px-4 py-4 border-t border-border/40">
