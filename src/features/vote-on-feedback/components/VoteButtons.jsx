@@ -17,7 +17,7 @@ function VoteButtons({ feedbackId, upvoteCount, userVote }) {
         disabled={hasVoted}
         className={`
           w-10 h-10 rounded-lg flex flex-col items-center justify-center gap-0.5
-          transition-all duration-150
+          transition-[background-color,color,transform] duration-150
           ${hasVoted
             ? 'bg-accent text-white cursor-not-allowed'
             : 'bg-accent-light text-accent hover:bg-accent hover:text-white cursor-pointer'

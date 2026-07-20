@@ -9,10 +9,8 @@ function FeedbackCard({ feedback, renderActions, animationIndex = 0, onClick }) 
       onClick={onClick}
       className="bg-surface border border-border rounded-xl p-5 flex items-start gap-4
         hover:border-accent/40 hover:shadow-card-hover
-        transition-all duration-200 ease-out
-        cursor-pointer group
-        animate-card-in"
-      style={{ animationDelay: `${staggerMs}ms` }}
+        transition-[border-color,box-shadow,transform,colors] duration-200 ease-out
+        cursor-pointer group"
     >
       {/* Vote Rail */}
       {renderActions && (

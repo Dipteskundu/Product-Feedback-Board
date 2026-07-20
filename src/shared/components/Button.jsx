@@ -24,7 +24,7 @@ function Button({
       className={`
         inline-flex items-center justify-center gap-2
         font-medium rounded-lg
-        transition-all duration-150 ease-out
+        transition-[background-color,box-shadow,transform,colors] duration-150 ease-out
         cursor-pointer
         disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none
         focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2

@@ -10,7 +10,7 @@ function TrendChart({ data }) {
         {data.map((item, i) => (
           <div key={i} className="flex-1 flex flex-col items-center gap-1">
             <div
-              className="w-full bg-accent rounded-t transition-all duration-500 hover:bg-accent-hover"
+              className="w-full bg-accent rounded-t transition-[height,background-color] duration-500 hover:bg-accent-hover"
               style={{ height: `${((item.count || 0) / max) * 100}%`, minHeight: item.count ? 4 : 0 }}
               title={`${item.date}: ${item.count} items`}
             />

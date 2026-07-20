@@ -12,7 +12,7 @@ function BarChart({ data, labelKey, valueKey }) {
             <span className="text-xs text-ink-muted w-20 text-right shrink-0 truncate">{item[labelKey]}</span>
             <div className="flex-1 h-5 bg-bg rounded-full overflow-hidden">
               <div
-                className="h-full rounded-full transition-all duration-500"
+                className="h-full rounded-full transition-[width] duration-500"
                 style={{
                   width: `${((item[valueKey] || 0) / max) * 100}%`,
                   backgroundColor:

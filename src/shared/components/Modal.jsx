@@ -59,7 +59,7 @@ function Modal({ isOpen, onClose, children, maxWidth = 'max-w-lg' }) {
       role="dialog"
       aria-modal="true"
     >
-      <div className="absolute inset-0 bg-ink/40 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-ink/40" />
       <div
         ref={contentRef}
         className={`

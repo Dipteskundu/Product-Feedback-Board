@@ -1,8 +1,14 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 import { useState } from 'react';
+import { useAuth } from '../../features/auth/hooks/useAuth';
 
-function AppLayout({ children }) {
+function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <div className="min-h-screen bg-bg flex flex-col lg:flex-row">
@@ -61,7 +67,7 @@ function AppLayout({ children }) {
             end
             onClick={() => setSidebarOpen(false)}
             className={({ isActive }) => `
-              flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+              flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
               ${isActive
                 ? 'bg-accent text-white shadow-sm'
                 : 'text-ink-muted hover:bg-accent-light hover:text-ink'
@@ -78,7 +84,7 @@ function AppLayout({ children }) {
             to="/dashboard"
             onClick={() => setSidebarOpen(false)}
             className={({ isActive }) => `
-              flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+              flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
               ${isActive
                 ? 'bg-accent text-white shadow-sm'
                 : 'text-ink-muted hover:bg-accent-light hover:text-ink'
@@ -92,6 +98,31 @@ function AppLayout({ children }) {
           </NavLink>
         </nav>
 
+        {/* User Info & Logout */}
+        {user && (
+          <div className="p-4 border-t border-border">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center text-sm font-semibold text-accent shrink-0">
+                {user.name?.charAt(0).toUpperCase() || '?'}
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-ink truncate">{user.name}</p>
+                <p className="text-xs text-ink-muted truncate">{user.email}</p>
+              </div>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-ink-muted
+                hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Sign Out
+            </button>
+          </div>
+        )}
+
         {/* Footer */}
         <div className="p-4 border-t border-border">
           <p className="text-xs text-ink-muted text-center">
@@ -102,7 +133,7 @@ function AppLayout({ children }) {
 
       {/* Main content */}
       <main className="flex-1 min-h-screen lg:min-h-0">
-        {children}
+        <Outlet />
       </main>
     </div>
   );
