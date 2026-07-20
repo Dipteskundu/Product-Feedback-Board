@@ -1,5 +1,7 @@
+import { FeedbackBoard } from '../../widgets/feedback-board';
+
 function FeedbackBoardPage() {
-  return <div>Feedback Board</div>;
+  return <FeedbackBoard />;
 }
 
 export default FeedbackBoardPage;

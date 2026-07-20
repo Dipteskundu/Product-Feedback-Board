@@ -1,1 +1,1 @@
-export {};
+export { useDeleteFeedback } from './hooks/useDeleteFeedback';
