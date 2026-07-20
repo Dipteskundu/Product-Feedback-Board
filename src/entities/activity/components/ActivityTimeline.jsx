@@ -32,12 +32,12 @@ const actionIcons = {
 };
 
 const actionColorClasses = {
-  created: 'bg-accent-light text-accent',
-  status_changed: 'bg-amber-50 text-status-progress',
-  priority_changed: 'bg-blue-50 text-feature',
-  comment_added: 'bg-emerald-50 text-improvement',
-  vote_cast: 'bg-violet-50 text-status-review',
-  deleted: 'bg-red-50 text-bug',
+  created: 'bg-accent-light text-accent dark:bg-accent/15 dark:text-accent',
+  status_changed: 'bg-amber-50 text-status-progress dark:bg-amber-950/40 dark:text-amber-400',
+  priority_changed: 'bg-blue-50 text-feature dark:bg-blue-950/40 dark:text-blue-400',
+  comment_added: 'bg-emerald-50 text-improvement dark:bg-emerald-950/40 dark:text-emerald-400',
+  vote_cast: 'bg-violet-50 text-status-review dark:bg-violet-950/40 dark:text-violet-400',
+  deleted: 'bg-red-50 text-bug dark:bg-red-950/40 dark:text-red-400',
 };
 
 function formatAction(activity) {
@@ -61,7 +61,7 @@ function formatAction(activity) {
 
 function ActivityItem({ activity }) {
   const icon = actionIcons[activity.action] || <span className="w-3 h-3 block" />;
-  const colorClass = actionColorClasses[activity.action] || 'bg-gray-100 text-ink-muted';
+  const colorClass = actionColorClasses[activity.action] || 'bg-gray-100 dark:bg-white/5 text-ink-muted';
 
   return (
     <div className="flex gap-3 items-start py-2">

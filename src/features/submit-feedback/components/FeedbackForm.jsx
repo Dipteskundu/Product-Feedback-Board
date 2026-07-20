@@ -1,135 +1,120 @@
-import { useState } from 'react';
-import { CATEGORIES, PRIORITIES } from '../../../shared/constants/enums';
 import Button from '../../../shared/components/Button';
-import { useCreateFeedback } from '../hooks/useCreateFeedback';
 
-function FeedbackForm({ onSuccess }) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('');
-  const [priority, setPriority] = useState('');
-  const [errors, setErrors] = useState({});
+const categoryOptions = ['Bug', 'Feature', 'Improvement'];
+const priorityOptions = ['Low', 'Medium', 'High'];
 
-  const createFeedback = useCreateFeedback();
+function FieldLabel({ children, htmlFor, hint }) {
+  return (
+    <label htmlFor={htmlFor} className="block text-sm font-medium text-ink mb-1.5">
+      <span>{children}</span>
+      {hint ? <span className="ml-2 text-xs font-normal text-ink-muted">{hint}</span> : null}
+    </label>
+  );
+}
 
-  const validate = () => {
-    const newErrors = {};
-    if (!title || title.length < 5) newErrors.title = 'Title must be at least 5 characters';
-    if (title.length > 100) newErrors.title = 'Title must be under 100 characters';
-    if (!description || description.length < 10) newErrors.description = 'Description must be at least 10 characters';
-    if (description.length > 1000) newErrors.description = 'Description must be under 1000 characters';
-    if (!category) newErrors.category = 'Category is required';
-    if (!priority) newErrors.priority = 'Priority is required';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+function SelectField({ id, label, value, onChange, options }) {
+  return (
+    <div>
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
+      <select
+        id={id}
+        name={id}
+        value={value}
+        onChange={onChange}
+        className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-sm text-ink shadow-sm outline-none transition-[border-color,box-shadow] duration-150 focus:border-accent focus:ring-4 focus:ring-accent/10"
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+function FeedbackForm({
+  values,
+  onChange,
+  onSubmit,
+  onCancel,
+  isSubmitting,
+  error,
+}) {
+  const handleChange = (event) => {
+    onChange(event.target.name, event.target.value);
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-
-    createFeedback.mutate(
-      { title, description, category, priority },
-      {
-        onSuccess: () => {
-          setTitle('');
-          setDescription('');
-          setCategory('');
-          setPriority('');
-          setErrors({});
-          onSuccess?.();
-        },
-      }
-    );
-  };
-
-  const inputClass = `
-    w-full px-4 py-2.5 bg-bg border rounded-lg text-sm text-ink
-    placeholder:text-ink-muted/60
-    focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent
-    transition-colors
-  `;
-
-  const labelClass = 'block text-sm font-medium text-ink mb-1.5';
-  const errorClass = 'text-xs text-bug mt-1.5';
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <div>
-        <label htmlFor="title" className={labelClass}>Title</label>
-        <input
-          id="title"
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className={`${inputClass} ${errors.title ? 'border-bug focus:ring-bug' : 'border-border'}`}
-          placeholder="Brief summary of your feedback"
-        />
-        {errors.title && <p className={errorClass}>{errors.title}</p>}
-      </div>
-
-      <div>
-        <label htmlFor="description" className={labelClass}>Description</label>
-        <textarea
-          id="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          rows={4}
-          className={`${inputClass} resize-y min-h-[100px] ${errors.description ? 'border-bug focus:ring-bug' : 'border-border'}`}
-          placeholder="Describe your feedback in detail"
-        />
-        {errors.description && <p className={errorClass}>{errors.description}</p>}
-        <p className="text-xs text-ink-muted mt-1">{description.length}/1000 characters</p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
+    <form onSubmit={onSubmit} className="p-6">
+      <div className="grid gap-5">
         <div>
-          <label htmlFor="category" className={labelClass}>Category</label>
-          <select
+          <FieldLabel htmlFor="title" hint="Required">
+            Title
+          </FieldLabel>
+          <input
+            id="title"
+            name="title"
+            type="text"
+            value={values.title}
+            onChange={handleChange}
+            placeholder="A short, specific summary"
+            minLength={5}
+            maxLength={100}
+            required
+            className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-sm text-ink shadow-sm outline-none transition-[border-color,box-shadow] duration-150 placeholder:text-ink-muted/60 focus:border-accent focus:ring-4 focus:ring-accent/10"
+          />
+        </div>
+
+        <div>
+          <FieldLabel htmlFor="description" hint="Required">
+            Description
+          </FieldLabel>
+          <textarea
+            id="description"
+            name="description"
+            value={values.description}
+            onChange={handleChange}
+            placeholder="Explain the problem or idea in a few sentences"
+            minLength={10}
+            maxLength={1000}
+            required
+            rows={5}
+            className="w-full rounded-xl border border-border bg-bg px-4 py-3 text-sm text-ink shadow-sm outline-none transition-[border-color,box-shadow] duration-150 placeholder:text-ink-muted/60 focus:border-accent focus:ring-4 focus:ring-accent/10 resize-y"
+          />
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <SelectField
             id="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className={`${inputClass} cursor-pointer ${errors.category ? 'border-bug focus:ring-bug' : 'border-border'}`}
-          >
-            <option value="">Select category</option>
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
-          {errors.category && <p className={errorClass}>{errors.category}</p>}
-        </div>
-
-        <div>
-          <label htmlFor="priority" className={labelClass}>Priority</label>
-          <select
+            label="Category"
+            value={values.category}
+            onChange={handleChange}
+            options={categoryOptions}
+          />
+          <SelectField
             id="priority"
-            value={priority}
-            onChange={(e) => setPriority(e.target.value)}
-            className={`${inputClass} cursor-pointer ${errors.priority ? 'border-bug focus:ring-bug' : 'border-border'}`}
-          >
-            <option value="">Select priority</option>
-            {PRIORITIES.map((p) => (
-              <option key={p} value={p}>{p}</option>
-            ))}
-          </select>
-          {errors.priority && <p className={errorClass}>{errors.priority}</p>}
+            label="Priority"
+            value={values.priority}
+            onChange={handleChange}
+            options={priorityOptions}
+          />
         </div>
-      </div>
 
-      <div className="flex justify-end gap-3 pt-2">
-        <Button type="submit" disabled={createFeedback.isPending}>
-          {createFeedback.isPending ? (
-            <>
-              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-              Submitting...
-            </>
-          ) : (
-            'Submit Feedback'
-          )}
-        </Button>
+        {error ? (
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-bug dark:border-red-900/40 dark:bg-red-950/30">
+            {error}
+          </div>
+        ) : null}
+
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+          <Button type="button" variant="ghost" size="md" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button type="submit" size="md" disabled={isSubmitting}>
+            {isSubmitting ? 'Submitting...' : 'Create Feedback'}
+          </Button>
+        </div>
       </div>
     </form>
   );

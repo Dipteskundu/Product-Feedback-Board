@@ -8,6 +8,6 @@ export async function createComment(feedbackId, body, parentId = null) {
   return api.post(`/feedback/${feedbackId}/comments`, { body, parentId });
 }
 
-export async function deleteComment(id) {
-  return api.del(`/feedback/comments/${id}`);
+export async function deleteComment(feedbackId, commentId) {
+  return api.del(`/feedback/${feedbackId}/comments/${commentId}`);
 }

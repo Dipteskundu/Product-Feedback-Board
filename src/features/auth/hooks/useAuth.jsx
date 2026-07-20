@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as authApi from '../api/authApi.js';
 
@@ -16,10 +16,10 @@ export function AuthProvider({ children }) {
   });
 
   useEffect(() => {
-    if (data?.user) {
+    if (data?.user && data.user._id !== user?._id) {
       setUser(data.user);
     }
-  }, [data]);
+  }, [data, user?._id]);
 
   const loginMutation = useMutation({
     mutationFn: authApi.login,
@@ -60,7 +60,7 @@ export function AuthProvider({ children }) {
     [logoutMutation]
   );
 
-  const value = {
+  const value = useMemo(() => ({
     user,
     isAuthLoading: isCheckingAuth || loginMutation.isPending || registerMutation.isPending || logoutMutation.isPending,
     isAuthenticated: !!user,
@@ -73,7 +73,7 @@ export function AuthProvider({ children }) {
     logout,
     loginError: loginMutation.error,
     registerError: registerMutation.error,
-  };
+  }), [user, isCheckingAuth, loginMutation.isPending, registerMutation.isPending, logoutMutation.isPending, login, register, logout, loginMutation.error, registerMutation.error]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import Button from '../../../shared/components/Button';
+import { useToast } from '../../../shared/components/Toast';
 import { useAddComment } from '../hooks/useAddComment';
 
 function CommentInput({ feedbackId, parentId = null, onCancel }) {
   const [body, setBody] = useState('');
   const addComment = useAddComment(feedbackId);
+  const toast = useToast();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -15,6 +17,9 @@ function CommentInput({ feedbackId, parentId = null, onCancel }) {
         onSuccess: () => {
           setBody('');
           onCancel?.();
+        },
+        onError: (error) => {
+          toast(error.message || 'Failed to post comment', 'error');
         },
       }
     );

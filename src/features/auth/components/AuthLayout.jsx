@@ -3,6 +3,7 @@ function AuthLayout({ children, title, subtitle }) {
     <div className="min-h-screen bg-bg flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
+          <img src="/brand-logo.svg" alt="Feedback Board Logo" className="w-16 h-16 mx-auto mb-4" />
           <h1 className="font-heading font-bold text-3xl text-ink mb-2">
             Feedback Board
           </h1>

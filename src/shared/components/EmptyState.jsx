@@ -4,7 +4,7 @@ function EmptyState({ title, description, action, onAction, icon }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
       {icon && (
-        <div className="w-16 h-16 rounded-2xl bg-accent-light flex items-center justify-center mb-6">
+        <div className="w-16 h-16 rounded-2xl bg-accent-light dark:bg-accent/10 flex items-center justify-center mb-6">
           {icon}
         </div>
       )}

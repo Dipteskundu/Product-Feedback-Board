@@ -8,13 +8,14 @@ import PriorityDots from '../../entities/feedback/components/PriorityDots';
 import { VoteButtons } from '../../features/vote-on-feedback';
 import StatusSelect from '../../features/change-status/components/StatusSelect';
 import { DeleteRequestButton } from '../../features/delete-request';
-import { CommentInput } from '../../features/add-comment';
+import { CommentInput, useDeleteComment } from '../../features/add-comment';
 import { useComments } from '../../entities/comment';
 import CommentList from '../../entities/comment/components/CommentList';
 import { useActivities } from '../../entities/activity';
 import ActivityTimeline from '../../entities/activity/components/ActivityTimeline';
 import { useDeleteFeedback } from '../../features/delete-feedback';
 import { useAuth } from '../../features/auth/hooks/useAuth';
+import { useToast } from '../../shared/components/Toast';
 import ConfirmDialog from '../../shared/components/ConfirmDialog';
 import Button from '../../shared/components/Button';
 import { CardSkeleton } from '../../shared/components/Skeleton';
@@ -25,7 +26,9 @@ function FeedbackDetail() {
   const [replyTo, setReplyTo] = useState(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const deleteFeedback = useDeleteFeedback();
+  const deleteComment = useDeleteComment(id);
   const { user } = useAuth();
+  const toast = useToast();
 
   const isManagerOrAdmin = user?.role === 'manager' || user?.role === 'admin';
 
@@ -49,6 +52,13 @@ function FeedbackDetail() {
     });
   };
 
+  const handleDeleteComment = (commentId) => {
+    deleteComment.mutate(commentId, {
+      onSuccess: () => toast('Comment deleted', 'success'),
+      onError: (error) => toast(error.message || 'Failed to delete comment', 'error'),
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto">
@@ -60,10 +70,10 @@ function FeedbackDetail() {
   if (error) {
     return (
       <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto">
-        <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center dark:bg-red-950/40 dark:border-red-900/40">
           <p className="text-bug font-medium">Feedback not found</p>
           <Button variant="secondary" onClick={() => navigate('/')} className="mt-4">
-            Back to Board
+        Back to Feedback
           </Button>
         </div>
       </div>
@@ -141,7 +151,12 @@ function FeedbackDetail() {
         <h2 className="text-lg font-heading font-bold text-ink mb-4">
           Comments ({comments.reduce((acc, c) => acc + 1 + (c.replies?.length || 0), 0)})
         </h2>
-        <CommentList comments={comments} onReply={setReplyTo} />
+        <CommentList
+          comments={comments}
+          onReply={setReplyTo}
+          onDelete={handleDeleteComment}
+          currentUserId={user?._id}
+        />
         <div className="mt-4 pt-4 border-t border-border">
           <CommentInput
             feedbackId={id}

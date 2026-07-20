@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import { COLORS } from '../constants/tokens';
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -18,32 +17,14 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div
-          style={{
-            padding: 32,
-            textAlign: 'center',
-            backgroundColor: COLORS.surface,
-            border: `1px solid ${COLORS.border}`,
-            borderRadius: 8,
-            margin: 24,
-          }}
-        >
-          <h2 style={{ margin: '0 0 8px', color: COLORS.ink }}>Something went wrong</h2>
-          <p style={{ margin: '0 0 16px', color: COLORS.inkMuted }}>
+        <div className="p-8 text-center bg-surface border border-border rounded-lg m-6">
+          <h2 className="text-lg font-heading font-bold text-ink mb-2">Something went wrong</h2>
+          <p className="text-sm text-ink-muted mb-6">
             An unexpected error occurred. Please try refreshing the page.
           </p>
           <button
             onClick={() => this.setState({ hasError: false, error: null })}
-            style={{
-              padding: '8px 16px',
-              borderRadius: 6,
-              border: 'none',
-              backgroundColor: COLORS.accent,
-              color: '#FFFFFF',
-              fontSize: 14,
-              fontWeight: 500,
-              cursor: 'pointer',
-            }}
+            className="px-4 py-2 rounded-md bg-accent text-white text-sm font-medium cursor-pointer hover:bg-accent-hover transition-colors"
           >
             Try Again
           </button>

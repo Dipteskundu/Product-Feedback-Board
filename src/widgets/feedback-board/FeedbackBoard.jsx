@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFeedbackList } from '../../entities/feedback';
 import { FeedbackGrid } from '../../entities/feedback';
@@ -6,19 +6,16 @@ import { VoteButtons } from '../../features/vote-on-feedback';
 import { useDeleteFeedback } from '../../features/delete-feedback';
 import { DeleteRequestButton } from '../../features/delete-request';
 import { FilterBar, useFeedbackFilters } from '../../features/filter-feedback';
-import { FeedbackForm } from '../../features/submit-feedback';
+import { CreateFeedbackDialog } from '../../features/submit-feedback';
 import { useToast } from '../../shared/components/Toast';
 import { useAuth } from '../../features/auth/hooks/useAuth';
 import { useNotifications } from '../../shared/hooks/useNotifications';
 import ConfirmDialog from '../../shared/components/ConfirmDialog';
-import Button from '../../shared/components/Button';
-import Modal from '../../shared/components/Modal';
 import EmptyState from '../../shared/components/EmptyState';
 import { ListSkeleton } from '../../shared/components/Skeleton';
 import { useDeleteConfirmation } from './useDeleteConfirmation';
 
 function FeedbackBoard() {
-  const [isFormOpen, setIsFormOpen] = useState(false);
   const { filters, setFilter, clearFilters } = useFeedbackFilters();
   const { data, isLoading, error } = useFeedbackList(filters);
   const deleteFeedback = useDeleteFeedback();
@@ -33,7 +30,7 @@ function FeedbackBoard() {
   const isManagerOrAdmin = user?.role === 'manager' || user?.role === 'admin';
 
   useEffect(() => {
-    if (notifications.length > 0) {
+    if (Array.isArray(notifications) && notifications.length > 0) {
       notifications.forEach((n) => {
         if (!shownNotifications.current.has(n.id)) {
           shownNotifications.current.add(n.id);
@@ -66,7 +63,7 @@ function FeedbackBoard() {
             e.stopPropagation();
             requestDelete(item._id);
           }}
-          className="p-1.5 rounded-lg text-ink-muted hover:text-bug hover:bg-red-50 transition-colors"
+          className="p-1.5 rounded-lg text-ink-muted hover:text-bug hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
           title="Delete feedback"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -88,21 +85,18 @@ function FeedbackBoard() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col gap-4 mb-6 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <h1 className="text-2xl sm:text-3xl font-heading font-bold text-ink">
-            Feedback Board
+            Product Feedback
           </h1>
           <p className="text-sm text-ink-muted mt-1">
-            {isLoading ? 'Loading...' : `${count} suggestion${count !== 1 ? 's' : ''}`}
+            {isLoading ? 'Loading...' : `Browse and vote on ${count} suggestion${count !== 1 ? 's' : ''}`}
           </p>
         </div>
-        <Button onClick={() => setIsFormOpen(true)}>
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          New Feedback
-        </Button>
+        <div className="lg:ml-auto lg:self-start">
+          <CreateFeedbackDialog />
+        </div>
       </div>
 
       {/* Filters */}
@@ -122,7 +116,7 @@ function FeedbackBoard() {
       {isLoading && <ListSkeleton count={3} />}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center dark:bg-red-950/40 dark:border-red-900/40">
           <p className="text-bug font-medium">Failed to load feedback</p>
           <p className="text-sm text-ink-muted mt-1">Please try again later</p>
         </div>
@@ -136,9 +130,7 @@ function FeedbackBoard() {
             </svg>
           }
           title="No feedback yet"
-          description="Be the first to share your ideas and help us improve the product."
-          action="+ New Feedback"
-          onAction={() => setIsFormOpen(true)}
+          description="No feedback has been submitted yet. Check back later."
         />
       )}
 
@@ -149,17 +141,6 @@ function FeedbackBoard() {
           onCardClick={(item) => navigate(`/feedback/${item._id}`)}
         />
       )}
-
-      {/* Form Modal */}
-      <Modal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)}>
-        <h2 className="text-xl font-heading font-bold text-ink mb-6">
-          Create New Feedback
-        </h2>
-        <FeedbackForm onSuccess={() => {
-          setIsFormOpen(false);
-          toast('Feedback submitted successfully', 'success');
-        }} />
-      </Modal>
 
       {/* Delete Confirmation */}
       <ConfirmDialog

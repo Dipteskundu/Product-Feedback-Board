@@ -8,7 +8,7 @@ function RequestManagerButton() {
 
   const handleClick = () => {
     createRequest.mutate(undefined, {
-      onSuccess: () => toast('Manager request submitted. Waiting for admin approval.', 'info'),
+      onSuccess: () => toast('Manager request sent successfully', 'success'),
       onError: (error) => toast(error.message || 'Failed to submit request', 'error'),
     });
   };

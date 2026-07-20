@@ -14,7 +14,7 @@ function RegisterForm({ onSubmit, isLoading, error }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+        <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 dark:bg-red-950/40 dark:border-red-900/40 dark:text-red-400">
           {error.message}
         </div>
       )}
