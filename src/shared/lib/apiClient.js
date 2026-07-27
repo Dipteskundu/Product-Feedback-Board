@@ -1,3 +1,5 @@
+import { getAuthToken } from './authToken';
+
 const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 async function request(method, path, body) {
@@ -7,6 +9,11 @@ async function request(method, path, body) {
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
   };
+
+  const token = getAuthToken();
+  if (token) {
+    options.headers.Authorization = `Bearer ${token}`;
+  }
 
   if (body) {
     options.body = JSON.stringify(body);
