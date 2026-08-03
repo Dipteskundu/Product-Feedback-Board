@@ -1,26 +1,16 @@
-function AuthLayout({ children, title, subtitle }) {
-  return (
-    <div className="min-h-screen bg-bg flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <img src="/brand-logo.svg" alt="Feedback Board Logo" className="w-16 h-16 mx-auto mb-4" />
-          <h1 className="font-heading font-bold text-3xl text-ink mb-2">
-            Feedback Board
-          </h1>
-          <p className="text-ink-muted text-sm">
-            Share, vote, and prioritize product feedback
-          </p>
-        </div>
+import { Link } from 'react-router-dom';
 
-        <div className="bg-surface border border-border rounded-xl shadow-card p-6">
-          {title && (
-            <div className="mb-6">
-              <h2 className="font-heading font-bold text-xl text-ink">{title}</h2>
-              {subtitle && <p className="text-sm text-ink-muted mt-1">{subtitle}</p>}
-            </div>
-          )}
-          {children}
-        </div>
+function AuthLayout({ children }) {
+  return (
+    <div className="min-h-screen bg-bg flex flex-col items-center justify-center p-6">
+      <div className="w-full max-w-sm">
+        {/* Logo */}
+        <Link to="/welcome" className="flex items-center justify-center gap-2.5 mb-8">
+          <img src="/brand-logo.svg" alt="" className="w-8 h-8" />
+          <span className="font-heading font-bold text-lg text-ink">Feedback Board</span>
+        </Link>
+
+        {children}
       </div>
     </div>
   );

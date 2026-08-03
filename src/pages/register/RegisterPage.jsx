@@ -29,13 +29,18 @@ function RegisterPage() {
   };
 
   return (
-    <AuthLayout title="Create Account" subtitle="Join us and start sharing your feedback.">
-      <RegisterForm onSubmit={handleSubmit} isLoading={isAuthLoading} error={registerError} />
+    <AuthLayout>
+      <div className="space-y-6">
+        <div className="text-center">
+          <h1 className="font-heading font-bold text-2xl sm:text-3xl text-ink">Create account</h1>
+          <p className="text-base text-ink-muted mt-1">Start collecting feedback today</p>
+        </div>
 
-      <div className="mt-6 text-center">
-        <p className="text-sm text-ink-muted">
+        <RegisterForm onSubmit={handleSubmit} isLoading={isAuthLoading} error={registerError} />
+
+        <p className="text-center text-sm text-ink-muted">
           Already have an account?{' '}
-          <Link to="/login" className="text-accent hover:text-accent-hover font-medium transition-colors">
+          <Link to="/login" className="text-ink font-medium hover:text-accent transition-colors">
             Sign in
           </Link>
         </p>
